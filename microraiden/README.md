@@ -1,111 +1,121 @@
-# µRaiden
+# Development
+
+If you want to develop applications based on microraiden,
+we provide you with a good starting point.
+
+ - [Development documentation](
+ https://microraiden.readthedocs.io/en/latest/index.html#development)
+ - [Python API Documentation](
+ https://microraiden.readthedocs.io/en/latest/api-reference.html)
+
+Please be aware, that we didn't arrive at a final release yet,
+so we don't guarantee that the API will stay consistent and
+backwards-compatible.
+
+Since we develop with a high pace, it may be possible that
+the documentation is outdated. Whenever you find some inconsistencies,
+please [help us](#contribution-guidelines) by reporting or fixing the documentation.
 
 ## Installation
 
-### Using `virtualenv`
+For developing purposes you should install microraiden in pip's
+`editable` mode:
 
-Run the following commands from the repository root directory.
-
-```bash
-virtualenv -p python3 env
-. env/bin/activate
-pip install -e microraiden
 ```
-
-#### Using microraiden in pip's _editable_ mode
-Because of `gevent` you will need to install microraiden's requirements first.
-```bash
-virtualenv -p python3 env
-. env/bin/activate
 git clone git@github.com:raiden-network/microraiden.git
 cd microraiden/microraiden
 pip install -r requirements-dev.txt
 pip install -e .
 ```
 
-### Using a global `pip3` installation
+Further instructions can be found in the [development documentation]().
 
-```bash
-sudo pip3 install -e microraiden
+## Contribution Guidelines
+
+We are always happy about your contribution and support.
+Whenever you encounter a problem, please feel free to file an issue
+or even correct the problem yourself with a code contribution.
+
+However, to make it easier for us to help you and verify your
+contributions, please follow our guidelines:
+
+### Filing Issues
+
+Before creating an issue please make sure that you followed the
+instructions in the documentation and that your system is
+configured properly.
+When you still have problems and decide to open an issue,
+please be as specific as you can.
+If you click on GitHub's `New issue`, we already prepared a template
+issue for you. Please adhere to the structure that is given there.
+
+<!--### Code style TODO-->
+
+### Docstrings
+
+For consistency and for auto-generating our API-Docs, we agreed on a
+specific docstring-style.
+
+We try to document our classes, methods and modules in the
+[Google docstring style](
+https://google.github.io/styleguide/pyguide.html?showone=Comments#Comments)
+
+
+Since we are using Python 3, we also want to include
+[type hints](https://docs.python.org/3.5/library/typing.html) in our code.
+
+To avoid duplication of type annotions from the google style docstrings,
+we leave out the types there.
+
+Instead of
+```
+def function(foo: str, bar: int) -> int:
+    """ Short description
+
+    Long description
+
+    Args:
+        foo (str): some arg
+        bar (int): another arg
+
+    Returns:
+        int: The number "1"
+    """
+    return 1
 ```
 
-## Execution
-
-### HTTP Proxy
-There are several examples that demonstrate how to serve custom content. To try them, run one of the following commands from the `microraiden` directory:
-```bash
-python3 -m microraiden.examples.demo_proxy --private-key <private_key_file> start
+we would use:
 ```
-or
-```bash
-python3 -m microraiden.examples.wikipaydia --private-key <private_key_file> --private-key-password-file <password_file> start
-```
-By default, the web server listens on `0.0.0.0:5000`. The private key file should be in the JSON format produced by Geth/Parity and must be readable and writable only by the owner to be accepted (`-rw-------`). A ``--private-key-password-file`` option can be specified, containing the password for the private key in the first line of the file. If it's not provided, the password will be prompted interactively.
-An Ethereum node RPC interface is expected to respond on http://localhost:8545. Alternatively, you can use [Infura infrastructure](https://infura.io/) as a RPC provider.
-### M2M Client
-```bash
-python3 -m microraiden.examples.m2m_client --key-path <path to private key file> --key-password-path <password file>
-```
+def function(foo: str, bar: int) -> int:
+    """ Short description
 
-## Library usage
+    Long description
 
-### Client
-The µRaiden client backend used by the M2M sample client can be used as a standalone library. After installation, import the following class:
-```python
-from microraiden import Client
+    Args:
+        foo: some arg
+        bar: another arg
 
-client = Client('<hex-encoded private key>')
+    Returns:
+        The number "1"
+    """
+    return 1
 ```
 
-Alternatively you can specify a path to a JSON private key, optionally specifying a file containing the password. If it's not provided, it'll be prompted interactively.
-```python
-client = Client(key_path='<path to private key file>', key_password_file='<path to password file>')
-```
 
-This client object allows interaction with the blockchain and offline-signing of transactions and Raiden balance proofs.
+### Code contributions
 
-An example lifecycle of a `Client` object could look like this:
+In order to contribute, you have to sign our
+[CLA](https://cla-assistant.io/raiden-network/microraiden).
 
-```python
-from microraiden import Client
 
-receiver = '0xb6b79519c91edbb5a0fc95f190741ad0c4b1bb4d'
-privkey = '0x55e58f57ec2177ea681ee461c6d2740060fd03109036e7e6b26dcf0d16a28169'
+Whenever you want to fix an issue or contribute to our code,
+please:
+ - fork the microraiden repository
+ - write your code
+ - push to your fork
+ - create a merge-pull-request (for now directly to the `master` branch)
 
-# 'with' statement to cleanly release the client's file lock in the end.
-with Client(privkey) as client:
+In order to be mergeable, the PR needs a review by at least one of
+our maintainers, and the tests on our CI mustn't fail.
 
-    channel = client.get_suitable_channel(receiver, 10)
-    channel.create_transfer(3)
-    channel.create_transfer(4)
-
-    print(
-        'Current balance proof:\n'
-        'From: {}\n'
-        'To: {}\n'
-        'Channel opened at block: #{}\n'  # used to uniquely identify this channel
-        'Balance: {}\n'                   # total: 7
-        'Signature: {}\n'                 # valid signature for a balance of 7 on this channel
-        .format(
-            channel.sender, channel.receiver, channel.block, channel.balance, channel.balance_sig
-        )
-    )
-
-    channel.topup(5)                      # total deposit: 15
-
-    channel.create_transfer(5)            # total balance: 12
-
-    channel.close()
-
-    # Wait for settlement period to end.
-
-    channel.settle()
-
-    # Instead of requesting a close and waiting for the settlement period to end, you can also perform
-    # a cooperative close, provided that you have a receiver-signed balance proof that matches your
-    # current channel balance.
-
-    channel.close_cooperatively(closing_sig)
-```
-
-The values required for a valid balance proof required by the receiver end are printed above. Make sure to let them know.
+Please tag the PR with the `please review` label.
