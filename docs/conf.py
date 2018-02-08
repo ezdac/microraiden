@@ -212,3 +212,4 @@ html_theme_options = {
 }
 def setup(app):
     app.add_stylesheet("css/main.css")
+    app.add_stylesheet("css/jquery.mCustomScrollbar.css")
