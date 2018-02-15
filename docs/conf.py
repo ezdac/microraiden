@@ -40,7 +40,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
-    'sphinx_click.ext'
 ]
 
 # configure napoleon for Google style docstrings
@@ -69,8 +68,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'microraiden'
-copyright = '2017, Brainbot AG'
-author = 'Brainbot AG'
+copyright = '2018, brainbot labs Est.'
+author = 'brainbot labs Est.'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
