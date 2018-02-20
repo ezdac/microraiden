@@ -32,7 +32,7 @@
 {% if theme_bootstrap_version == "3" %}
   {%- macro bsidebar() %}
       {%- if render_sidebar %}
-      <div class="{{ bs_span_prefix }}3" style="padding-top: 20px;">
+      <div class="{{ bs_span_prefix }}3" style="padding-top: 15px; padding-right: 0px;" !important>
         <div class="bs-sidenav affix-top" role="complementary">
           {%- for sidebartemplate in sidebars %}
             {%- include sidebartemplate %}
@@ -44,7 +44,7 @@
 {% else %}
   {%- macro bsidebar() %}
       {%- if render_sidebar %}
-      <div class="{{ bs_span_prefix }}3" style="padding-top: 20px;">
+      <div class="{{ bs_span_prefix }}3" style="padding-top: 15px; padding-right: 0px;" !important>
         <div class="bs-sidenav affix-top" data-spy="affix">
           {%- for sidebartemplate in sidebars %}
             {%- include sidebartemplate %}
@@ -70,10 +70,10 @@
 
 {%- block content %}
 {{ navBar() }}
-<div class="container" style="margin-left: 30px; padding-top: 20px">
+<div class="container" style="margin-left: 150px; padding-top: 20px">
   <div class="row">
     {%- block sidebar1 %}{{ bsidebar() }}{% endblock %}
-    <div class="{{ bs_span_prefix }}{{ bs_content_width }} content" style="margin-top: 20px;">
+    <div class="{{ bs_span_prefix }}{{ bs_content_width }} content" style="margin-top: 15px;">
       {% block body %}{% endblock %}
     </div>
     {% block sidebar2 %} {# possible location for sidebar #} {% endblock %}

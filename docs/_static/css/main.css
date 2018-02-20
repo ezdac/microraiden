@@ -222,12 +222,21 @@ video#bbvid {
   color: #333 !important;
   }
 
+.form-group {
+  margin-top: 15px;
+}
+
+.form-control {
+  border-radius: 2px;
+}
+
 .bs-sidenav {
   border-radius: 2px !important;
   background-color: #f7f7f7 !important;
-  top: 60px !important;
+  top: 44px !important;
   margin-top: 0px !important;
-  width: 213px !important;
+  /*width: 213px !important;*/
+  width: 277.5px !important;
   }
 
   .bs-sidenav .nav > li > a {
@@ -246,9 +255,10 @@ video#bbvid {
   .bs-sidenav .nav > .active > a,
   .bs-sidenav .nav > .active:hover > a,
   .bs-sidenav .nav > .active:focus > a {
-    font-weight: bold;
+    font-weight: normal !important;
     color: #4f4f4f !important;
-    background-color: transparent;
+    background-color: #eee;
+    /*background-color: transparent;*/
     border-right: 1px solid #4f4f4f !important;
   }
 

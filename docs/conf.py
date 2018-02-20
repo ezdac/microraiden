@@ -202,7 +202,7 @@ texinfo_documents = [
 ]
 
 html_sidebars = {
-   '**': ['raidensidebar.html'],
+   '**': ['searchbox.html' , 'raidensidebar.html'],
 #   'using/windows': ['windowssidebar.html', 'searchbox.html'],
 }
 
