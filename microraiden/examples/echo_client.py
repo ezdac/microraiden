@@ -5,6 +5,7 @@ import click
 import re
 
 from web3 import Web3
+from web3.providers.rpc import HTTPProvider
 
 from microraiden import Session
 import logging
@@ -24,13 +25,30 @@ import requests
     help='Path to file containing the password for the private key specified.',
     type=click.Path(exists=True, dir_okay=False, resolve_path=True)
 )
+
+@click.option(
+    '--endpoint-url',
+    default='http://localhost:5000',
+    help='Base URL for the requested resource',
+    type=str
+)
+@click.option(
+    '--web3-url',
+    default=None,
+    help='URL for the blockchain node (web3)',
+    type=str
+)
 @click.option('--resource', required=True, help='Get this resource.')
 def main(
         private_key: str,
         password_path: str,
-        resource: str
+        resource: str,
+        web3_url: str,
+        endpoint_url: str
 ):
-    run(private_key, password_path, resource)
+
+    web3 = Web3(HTTPProvider(web3_url))
+    run(private_key, password_path, resource, web3=web3, endpoint_url=endpoint_url)
 
 
 def run(

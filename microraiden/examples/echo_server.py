@@ -42,16 +42,24 @@ class DynamicPriceResource(Expensive):
     help='The server\'s private key path.',
     type=str
 )
-def main(private_key: str):
+@click.option(
+    '--web3-url',
+    default=WEB3_PROVIDER_DEFAULT,
+    help='URL for the blockchain node (web3)',
+    type=str
+)
+def main(private_key: str, web3_url: str):
     private_key = get_private_key(private_key)
-    run(private_key)
+    web3 = Web3(HTTPProvider(web3_url))
+    run(private_key, web3=web3)
 
 
 def run(
         private_key: str,
         state_file_path: str = os.path.join(click.get_app_dir('microraiden'), 'echo_server.db'),
         channel_manager: ChannelManager = None,
-        join_thread: bool = True
+        join_thread: bool = True,
+        web3: Web3 = None,
 ):
     dirname = os.path.dirname(state_file_path)
     if dirname:
@@ -61,8 +69,9 @@ def run(
     # arguments are:
     #  - private key to use for receiving funds
     #  - file for storing state information (balance proofs)
-    if channel_manager is None:
+    if web3 is None:
         web3 = Web3(HTTPProvider(WEB3_PROVIDER_DEFAULT))
+    if channel_manager is None:
         NETWORK_CFG.set_defaults(int(web3.version.network))
         channel_manager = make_channel_manager(
             private_key,
@@ -85,7 +94,7 @@ def run(
     )
 
     # Start the app. proxy is a WSGI greenlet, so you must join it properly.
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
 
     if join_thread:
         app.join()
