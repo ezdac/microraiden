@@ -93,6 +93,10 @@ def run(
         "/echodyn/<int:param>"
     )
 
+
+    from microraiden.proxy.resources.login import userDB
+
+    userDB.add_user('ezdac', '123test')
     # Start the app. proxy is a WSGI greenlet, so you must join it properly.
     app.run(debug=True, host='0.0.0.0')
 
